@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import VtkExample from "./components/VtkExample";
+import VtkExample2 from "./components/VtkExample2";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header className="App-header"
+              style={{position: 'relative', textAlign: 'center', zIndex: 1000}}
+      >
+          <h1>VTR.js</h1>
       </header>
+        <main>
+            <VtkExample2/>
+            {/*<VtkExample/>*/}
+        </main>
     </div>
   );
 }
