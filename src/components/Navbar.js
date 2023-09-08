@@ -14,9 +14,6 @@ const Navbar = () => {
                 <li>
                     <NavLink to="/tools-3">Tool-3</NavLink>
                 </li>
-                <li>
-                    <NavLink to="/tools-4">Tool-4</NavLink>
-                </li>
             </ul>
         </nav>
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import vtkFullScreenRenderWindow from '@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow';
 import vtkActor from '@kitware/vtk.js/Rendering/Core/Actor';
 import vtkElevationReader from '@kitware/vtk.js/IO/Misc/ElevationReader';
@@ -6,13 +6,17 @@ import vtkMapper from '@kitware/vtk.js/Rendering/Core/Mapper';
 import vtkTexture from '@kitware/vtk.js/Rendering/Core/Texture';
 import demImage from '../images/dem.jpg';
 import demImage2 from '../images/dem2.jpg';
-import dem from '../dem.csv'
-import dem2 from '../dem2.csv'
+import dem from '../dem.csv';
+import dem2 from '../dem2.csv';
 
-const VtkExample3 = () => {
+const VtkExample4 = () => {
     const vtkContainerRef = useRef(null);
     const context = useRef(null);
     const baseUrl = window.location.origin;
+
+    // State variables to track layer visibility
+    const [layer1Visible, setLayer1Visible] = useState(false);
+    const [layer2Visible, setLayer2Visible] = useState(true);
 
     useEffect(() => {
         if (!context.current) {
@@ -20,6 +24,7 @@ const VtkExample3 = () => {
                 rootContainer: vtkContainerRef.current,
                 background: [0, 0, 0],
             });
+
             // Create and configure texture for layer 1
             const elevationReader1 = vtkElevationReader.newInstance({
                 xSpacing: 0.01568,
@@ -63,7 +68,7 @@ const VtkExample3 = () => {
             };
             img2.src = demImage2;
             elevationReader2.setUrl(`${baseUrl + dem2}`).then((result) => {
-                console.log(result)
+                console.log(result);
                 renderer.resetCamera();
                 renderWindow.render();
             });
@@ -95,7 +100,7 @@ const VtkExample3 = () => {
                 elevationReader1,
                 elevationReader2,
             };
-            console.log(context.current)
+            console.log(context.current);
         }
 
         return () => {
@@ -105,15 +110,56 @@ const VtkExample3 = () => {
         };
     }, []);
 
+    // useEffect for handling visibility changes
+    useEffect(() => {
+        if (context.current) {
+            context.current.actor1.setVisibility(layer1Visible);
+            context.current.actor2.setVisibility(layer2Visible);
+            context.current.fullScreenRenderer.getRenderWindow().render();
+        }
+    }, [layer1Visible, layer2Visible]);
+
     return (
         <>
             <h2
                 style={{
                     position: 'relative',
                     textAlign: 'center',
-                    zIndex: 1000,
+                    zIndex: 2,
                     color: 'red',
-                }}>3D model with elevation data</h2>
+                }}
+            >
+                3D model with elevation data
+            </h2>
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '25px',
+                    left: '25px',
+                    zIndex: 2,
+                    background: 'white',
+                    padding: '12px',
+                }}
+            >
+                <label>
+                    Layer 1:
+                    <input
+                        type="checkbox"
+                        checked={layer1Visible}
+                        onChange={() => setLayer1Visible(!layer1Visible)}
+                    />
+                </label>
+
+                <label>
+                    Layer 2:
+                    <input
+                        type="checkbox"
+                        checked={layer2Visible}
+                        onChange={() => setLayer2Visible(!layer2Visible)}
+                    />
+                </label>
+            </div>
+
             <div
                 ref={vtkContainerRef}
                 style={{ width: '500px', height: '500px' }}
@@ -122,4 +168,4 @@ const VtkExample3 = () => {
     );
 };
 
-export default VtkExample3;
+export default VtkExample4;
