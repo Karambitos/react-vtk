@@ -5,12 +5,13 @@ import vtkActor from '@kitware/vtk.js/Rendering/Core/Actor';
 import vtkElevationReader from '@kitware/vtk.js/IO/Misc/ElevationReader';
 import vtkMapper from '@kitware/vtk.js/Rendering/Core/Mapper';
 import vtkTexture from '@kitware/vtk.js/Rendering/Core/Texture';
+import dem from '../dem.csv'
 import demImage from '../images/dem.jpg';
 
-const VtkExample2 = () => {
+const VtkExample4 = () => {
     const vtkContainerRef = useRef(null);
     const context = useRef(null);
-
+    const baseUrl = window.location.origin;
 
     useEffect(() => {
         if (!context.current) {
@@ -36,7 +37,7 @@ const VtkExample2 = () => {
             };
             img.src = demImage;
 
-            elevationReader.setUrl(`https://kitware.github.io/vtk-js/data/elevation/dem.csv`).then(() => {
+            elevationReader.setUrl(`${baseUrl + dem}`).then(() => {
                 renderer.resetCamera();
                 renderWindow.render();
             });
@@ -82,4 +83,4 @@ const VtkExample2 = () => {
     </>;
 };
 
-export default VtkExample2;
+export default VtkExample4;

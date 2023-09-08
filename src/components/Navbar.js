@@ -1,15 +1,21 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
     return (
         <nav>
-            <ul>
+            <ul className='navList'>
                 <li>
-                    <Link to="/tools-1">Tool-1</Link>
+                    <NavLink to="/tools-1">Tool-1</NavLink>
                 </li>
                 <li>
-                    <Link to="/tools-2">Tool-2</Link>
+                    <NavLink to="/tools-2">Tool-2</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/tools-3">Tool-3</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/tools-4">Tool-4</NavLink>
                 </li>
             </ul>
         </nav>

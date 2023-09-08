@@ -3,7 +3,6 @@ html {
   width: 100vw;
   overflow-x: hidden;
   scroll-behavior: smooth;
-
 }
 
 *,
@@ -20,12 +19,23 @@ body {
   background-color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.navList a{
+  display: block;
+  color: #fff;
+  padding: 5px 0;
+}
+
+.navList a.active {
+  color: red;
 }
 
 
