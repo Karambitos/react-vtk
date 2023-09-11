@@ -9,27 +9,27 @@ import demImage2 from '../images/dem2.jpg';
 import dem from '../dem.csv';
 import dem2 from '../dem2.csv';
 
-const VtkExample4 = () => {
+const VtkExample3 = () => {
     const vtkContainerRef = useRef(null);
     const context = useRef(null);
     const baseUrl = window.location.origin;
 
-    // State variables to track layer visibility
-    const [layer1Visible, setLayer1Visible] = useState(false);
+    // State variables to track layer visibility and space between layers
+    const [layer1Visible, setLayer1Visible] = useState(true);
     const [layer2Visible, setLayer2Visible] = useState(true);
+    const [spaceBetweenLayers, setSpaceBetweenLayers] = useState(-1); // Initial space value
 
     useEffect(() => {
         if (!context.current) {
             const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance({
                 rootContainer: vtkContainerRef.current,
-                background: [0, 0, 0],
             });
 
             // Create and configure texture for layer 1
             const elevationReader1 = vtkElevationReader.newInstance({
                 xSpacing: 0.01568,
                 ySpacing: 0.01568,
-                zScaling: 1,
+                zScaling: 0.1,
             });
             const img1 = new Image();
             img1.onload = function textureLoaded1() {
@@ -64,11 +64,12 @@ const VtkExample4 = () => {
                 texture2.setInterpolate(true);
                 texture2.setImage(img2);
                 actor2.addTexture(texture2);
+                // Adjust the position of Layer 2 in the z-axis using spaceBetweenLayers
+                actor2.setPosition(0, 0, spaceBetweenLayers);
                 renderWindow.render();
             };
             img2.src = demImage2;
-            elevationReader2.setUrl(`${baseUrl + dem2}`).then((result) => {
-                console.log(result);
+            elevationReader2.setUrl(`${baseUrl + dem2}`).then(() => {
                 renderer.resetCamera();
                 renderWindow.render();
             });
@@ -100,6 +101,7 @@ const VtkExample4 = () => {
                 elevationReader1,
                 elevationReader2,
             };
+
             console.log(context.current);
         }
 
@@ -108,7 +110,7 @@ const VtkExample4 = () => {
                 context.current = null;
             }
         };
-    }, []);
+    }, []); // No dependencies, only runs once
 
     // useEffect for handling visibility changes
     useEffect(() => {
@@ -118,6 +120,13 @@ const VtkExample4 = () => {
             context.current.fullScreenRenderer.getRenderWindow().render();
         }
     }, [layer1Visible, layer2Visible]);
+
+    // useEffect for handling spaceBetweenLayers changes
+    useEffect(() => {
+        // Adjust the position of Layer 2 in the z-axis using spaceBetweenLayers
+        context.current.actor2.setPosition(0, 0, spaceBetweenLayers);
+        context.current.fullScreenRenderer.getRenderWindow().render();
+    }, [spaceBetweenLayers]);
 
     return (
         <>
@@ -131,34 +140,58 @@ const VtkExample4 = () => {
             >
                 3D model with elevation data
             </h2>
-            <div
+            <table
                 style={{
                     position: 'absolute',
                     top: '25px',
                     left: '25px',
-                    zIndex: 2,
                     background: 'white',
                     padding: '12px',
+                    zIndex: 2,
                 }}
             >
-                <label>
-                    Layer 1:
-                    <input
-                        type="checkbox"
-                        checked={layer1Visible}
-                        onChange={() => setLayer1Visible(!layer1Visible)}
-                    />
-                </label>
-
-                <label>
-                    Layer 2:
-                    <input
-                        type="checkbox"
-                        checked={layer2Visible}
-                        onChange={() => setLayer2Visible(!layer2Visible)}
-                    />
-                </label>
-            </div>
+                <tbody>
+                <tr>
+                    <td>
+                        <label>
+                            Layer 1:
+                            <input
+                                type="checkbox"
+                                checked={layer1Visible}
+                                onChange={() => setLayer1Visible(!layer1Visible)}
+                            />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Layer 2:
+                            <input
+                                type="checkbox"
+                                checked={layer2Visible}
+                                onChange={() => setLayer2Visible(!layer2Visible)}
+                            />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Space Between Layers:
+                            <input
+                                type="range"
+                                min="-5"
+                                max="0"
+                                step="0.5"
+                                value={spaceBetweenLayers}
+                                onChange={(e) => setSpaceBetweenLayers(parseFloat(e.target.value))}
+                            />
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
             <div
                 ref={vtkContainerRef}
@@ -168,4 +201,4 @@ const VtkExample4 = () => {
     );
 };
 
-export default VtkExample4;
+export default VtkExample3;
