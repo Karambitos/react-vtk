@@ -12,7 +12,7 @@ function App() {
     );
   return (
       <Routes>
-          <Route path="/" element={<Navigate to="/tools-1"/>}/>
+          <Route path="/" element={<Navigate to="/tools-3"/>}/>
           <Route path="/tools-1" element={wrapRouteComponent(<VtkExample/>)}/>
           <Route path="/tools-2" element={wrapRouteComponent(<VtkExample2/>)}/>
           <Route path="/tools-3" element={wrapRouteComponent(<VtkExample3/>)}/>
