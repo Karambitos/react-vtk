@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/react-vtk/static/css/main.42bcdc67.css",
-    "main.js": "/react-vtk/static/js/main.568bfce6.js",
+    "main.js": "/react-vtk/static/js/main.be36dfbf.js",
     "static/media/dem.jpg": "/react-vtk/static/media/dem.61bbb440495483d09879.jpg",
     "dem2.csv": "/react-vtk/dem2.csv",
     "dem.csv": "/react-vtk/dem.csv",
@@ -10,10 +10,10 @@
     "static/media/dem2.csv": "/react-vtk/static/media/dem2.82640fa335a38622edad.csv",
     "static/media/dem.csv": "/react-vtk/static/media/dem.ab7748e5b4d16270b717.csv",
     "main.42bcdc67.css.map": "/react-vtk/static/css/main.42bcdc67.css.map",
-    "main.568bfce6.js.map": "/react-vtk/static/js/main.568bfce6.js.map"
+    "main.be36dfbf.js.map": "/react-vtk/static/js/main.be36dfbf.js.map"
   },
   "entrypoints": [
     "static/css/main.42bcdc67.css",
-    "static/js/main.568bfce6.js"
+    "static/js/main.be36dfbf.js"
   ]
 }
