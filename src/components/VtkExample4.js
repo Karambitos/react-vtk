@@ -6,14 +6,29 @@ import vtkMapper from '@kitware/vtk.js/Rendering/Core/Mapper';
 import vtkTexture from '@kitware/vtk.js/Rendering/Core/Texture';
 import demImage from '../images/dem.jpg';
 
+
+
 const VtkExample4 = () => {
     const vtkContainerRef = useRef(null);
     const context = useRef(null);
 
-    // State variables to track layer visibility and space between layers
+    // State variables to track layer visibility, space between layers, and opacity values
     const [layer1Visible, setLayer1Visible] = useState(true);
     const [layer2Visible, setLayer2Visible] = useState(true);
-    const [spaceBetweenLayers, setSpaceBetweenLayers] = useState(-1); // Initial space value
+    const [spaceBetweenLayers, setSpaceBetweenLayers] = useState(-1);
+    const [opacityValue1, setOpacityValue1] = useState(1); // Opacity for the first layer
+    const [opacityValue2, setOpacityValue2] = useState(0.5); // Opacity for the second layer
+    const [layer2Color, setLayer2Color] = useState('#f90101'); // Color for the second layer
+
+
+    const hexToRgb = (hex) => {
+        hex = hex.replace(/^#/, '');
+        const bigint = parseInt(hex, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return [r, g, b]; // Return an array of [r, g, b]
+    }
 
     useEffect(() => {
         if (!context.current) {
@@ -62,7 +77,7 @@ const VtkExample4 = () => {
             const actor2 = vtkActor.newInstance();
             actor2.setMapper(mapper2);
             // Set the texture for actor2
-            // actor2.addTexture();
+            // actor2.addTexture(changeLayerColor(layer2Color));
             // Adjust the position of Layer 2 in the z-axis using spaceBetweenLayers
             actor2.setPosition(0, 0, spaceBetweenLayers);
 
@@ -95,7 +110,7 @@ const VtkExample4 = () => {
                 context.current = null;
             }
         };
-    }, []);
+    }, []); // No dependencies, only runs once
 
     // useEffect for handling visibility changes
     useEffect(() => {
@@ -108,12 +123,34 @@ const VtkExample4 = () => {
 
     // useEffect for handling spaceBetweenLayers changes
     useEffect(() => {
-        // Adjust the position of Layer 2 in the z-axis using spaceBetweenLayers
         if (context.current) {
+            // Adjust the position of Layer 2 in the z-axis using spaceBetweenLayers
             context.current.actor2.setPosition(0, 0, spaceBetweenLayers);
             context.current.fullScreenRenderer.getRenderWindow().render();
         }
     }, [spaceBetweenLayers]);
+
+    // useEffect for handling opacityValue changes
+    useEffect(() => {
+        if (context.current) {
+            // Update the opacity of actor1 (first layer)
+            context.current.actor1.getProperty().setOpacity(opacityValue1);
+            // Update the opacity of actor2 (second layer)
+            context.current.actor2.getProperty().setOpacity(opacityValue2);
+            context.current.fullScreenRenderer.getRenderWindow().render();
+        }
+    }, [opacityValue1, opacityValue2]);
+
+
+
+    // useEffect for handling layer2Color changes
+    useEffect(() => {
+        if (context.current) {
+            const colorArray = hexToRgb(layer2Color);
+            context.current.actor2.getProperty().setColor(...colorArray);
+            context.current.fullScreenRenderer.getRenderWindow().render();
+        }
+    }, [layer2Color]);
 
     return (
         <>
@@ -138,6 +175,48 @@ const VtkExample4 = () => {
                 }}
             >
                 <tbody>
+                <tr>
+                    <td>
+                        <label>
+                            Layer 1 Opacity:
+                            <input
+                                type="range"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                value={opacityValue1}
+                                onChange={(e) => setOpacityValue1(parseFloat(e.target.value))}
+                            />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Layer 2 Opacity:
+                            <input
+                                type="range"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                value={opacityValue2}
+                                onChange={(e) => setOpacityValue2(parseFloat(e.target.value))}
+                            />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            Layer 2 Color:
+                            <input
+                                type="color"
+                                value={layer2Color}
+                                onChange={(e) => setLayer2Color(e.target.value)}
+                            />
+                        </label>
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         <label>
@@ -172,9 +251,7 @@ const VtkExample4 = () => {
                                 max="0"
                                 step="0.5"
                                 value={spaceBetweenLayers}
-                                onChange={(e) =>
-                                    setSpaceBetweenLayers(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => setSpaceBetweenLayers(parseFloat(e.target.value))}
                             />
                         </label>
                     </td>
@@ -182,7 +259,10 @@ const VtkExample4 = () => {
                 </tbody>
             </table>
 
-            <div ref={vtkContainerRef} style={{ width: '500px', height: '500px' }} />
+            <div
+                ref={vtkContainerRef}
+                style={{ width: '500px', height: '500px' }}
+            />
         </>
     );
 };
